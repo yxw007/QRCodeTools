@@ -19,7 +19,9 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
-    "electron-updater": "^6.1.7"
+    "electron-updater": "^6.1.7",
+    "konva": "^9.3.0",
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.1",
@@ -33,6 +35,7 @@
     "eslint-plugin-vue": "^9.19.2",
     "less": "^4.2.0",
     "prettier": "^3.1.1",
+    "sass": "^1.69.7",
     "vite": "^5.0.11",
     "vue": "^3.4.5"
   }
