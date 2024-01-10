@@ -32,3 +32,6 @@ $ yarn build:mac
 # For Linux
 $ yarn build:linux
 ```
+
+## Effect
+![](https://cdn.jsdelivr.net/gh/yxw007/BlogPicBed@master//img/20240110195937.gif)
