@@ -1,0 +1,29 @@
+@startuml 截图
+
+skinparam titleBackgroundColor #ff0000
+skinparam titleFontSize 20
+
+title "截图过程-时序图"
+hide footbox
+participant mainProcess
+participant renderProcess
+
+autonumber
+
+mainProcess<-renderProcess++: 点击截图
+|||
+mainProcess->mainProcess: 创建cutWindow
+note left: 隐藏mainWindow\n显示cutWindow
+|||
+mainProcess->renderProcess --++: 加载截图页
+|||
+mainProcess<-renderProcess ++: 获取当前屏幕截图
+|||
+return 返回屏幕截图
+renderProcess->renderProcess: 截取图片区域
+mainProcess<-renderProcess--++: 确认截取图片
+|||
+mainProcess->mainProcess: 显示截图
+note left: 关闭cutWindow\n显示mainWindow
+
+@enduml
