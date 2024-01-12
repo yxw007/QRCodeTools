@@ -16,9 +16,9 @@ const { bridgeEvent } = window.api;
 const previewImage = ref("");
 
 async function handleCutScreen() {
-	await ipcRenderer.send("OPEN_CUT_SCREEN");
-	ipcRenderer.removeListener("GET_CUT_INFO", getCutInfo);
-	ipcRenderer.on("GET_CUT_INFO", getCutInfo);
+	await ipcRenderer.send("ENTER_SCREEN_CUT");
+	ipcRenderer.removeListener("GET_CUT_IMAGE_INFO", getCutInfo);
+	ipcRenderer.on("GET_CUT_IMAGE_INFO", getCutInfo);
 }
 
 function getCutInfo(event, pic) {

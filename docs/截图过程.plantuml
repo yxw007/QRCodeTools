@@ -1,5 +1,30 @@
 @startuml 截图过程
 
+skinparam titleBackgroundColor #ff0000
+skinparam titleFontSize 20
 
+title "截图过程-时序图"
+hide footbox
+
+autonumber
+
+->mainProcess++: app start
+mainProcess-> homePage++: load home page
+|||
+mainProcess<-homePage--: ENTER_SCREEN_CUT
+|||
+mainProcess->mainProcess: hide main window\ncreate cut window
+mainProcess->cutPage++: load cut page
+
+mainProcess<-cutPage: CUT_CURRENT_SCREEN
+mainProcess<-cutPage: get current screen snapshot
+mainProcess-->>cutPage:
+cutPage->cutPage: use current screen snapshot\nupdate background image
+cutPage->cutPage: select cut screen region
+mainProcess->cutPage: confirm cut screen region
+mainProcess<-cutPage--: finish cut screen region
+mainProcess->mainProcess: hide cut window
+mainProcess->homePage++: show main window
+homePage->homePage: show cut screen image
 
 @enduml

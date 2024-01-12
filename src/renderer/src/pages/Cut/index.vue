@@ -17,10 +17,10 @@ let bg = ref("");
 let stage, layer, rect, transformer;
 
 onMounted(() => {
-	ipcRenderer.send("SHOW_CUT_SCREEN");
-	ipcRenderer.removeListener("GET_SCREEN_IMAGE", getSource);
-	ipcRenderer.on("GET_SCREEN_IMAGE", getSource);
-	ipcRenderer.on("FINISH_CUT", confirmCut);
+	ipcRenderer.send("CUT_CURRENT_SCREEN");
+	ipcRenderer.removeListener("GET_CURRENT_SCREEN_IMAGE", getSource);
+	ipcRenderer.on("GET_CURRENT_SCREEN_IMAGE", getSource);
+	ipcRenderer.on("CONFIRM_CUT_SCREEN_REGION", confirmCut);
 });
 
 async function getSource(event, source) {
@@ -140,14 +140,14 @@ async function confirmCut() {
 		width: Math.abs(width) * scaleX,
 		height: Math.abs(height) * scaleY,
 	});
-	ipcRenderer.send("FINISH_CUT_SCREEN", pic);
+	ipcRenderer.send("FINISH_CUT_SCREEN_REGION", pic);
 }
 
 /**
  * 关闭截图
  */
 function closeCut() {
-	ipcRenderer.send("CLOSE_CUT_SCREEN");
+	ipcRenderer.send("EXIT_SCREEN_CUT");
 }
 </script>
 

@@ -140,7 +140,7 @@ function createCutWindow() {
 }
 
 function sendFinishCut() {
-  cutWindow && cutWindow.webContents.send('FINISH_CUT')
+  cutWindow && cutWindow.webContents.send('CONFIRM_CUT_SCREEN_REGION')
 }
 
 function openCutScreen() {
@@ -151,21 +151,21 @@ function openCutScreen() {
 }
 
 function openMainListener() {
-  ipcMain.on('OPEN_CUT_SCREEN', openCutScreen)
-  ipcMain.on('SHOW_CUT_SCREEN', async (e) => {
+  ipcMain.on('ENTER_SCREEN_CUT', openCutScreen)
+  ipcMain.on('CUT_CURRENT_SCREEN', async (e) => {
     //TODO:
     let sources = await desktopCapturer.getSources({
       types: ['screen'],
       thumbnailSize: getSize()
     })
-    cutWindow && cutWindow.webContents.send('GET_SCREEN_IMAGE', sources[0])
+    cutWindow && cutWindow.webContents.send('GET_CURRENT_SCREEN_IMAGE', sources[0])
   })
-  ipcMain.on('FINISH_CUT_SCREEN', async (e, cutInfo) => {
+  ipcMain.on('FINISH_CUT_SCREEN_REGION', async (e, cutInfo) => {
     closeCutWindow()
-    mainWindow.webContents.send('GET_CUT_INFO', cutInfo)
+    mainWindow.webContents.send('GET_CUT_IMAGE_INFO', cutInfo)
     mainWindow.show()
   })
-  ipcMain.on('CLOSE_CUT_SCREEN', async (e) => {
+  ipcMain.on('EXIT_SCREEN_CUT', async (e) => {
     closeCutWindow()
     mainWindow.show()
   })
