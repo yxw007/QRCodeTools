@@ -1,8 +1,11 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { bridgeEvent } from '../main/constant'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  bridgeEvent
+}
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

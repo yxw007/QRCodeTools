@@ -153,6 +153,7 @@ function openCutScreen() {
 function openMainListener() {
   ipcMain.on('OPEN_CUT_SCREEN', openCutScreen)
   ipcMain.on('SHOW_CUT_SCREEN', async (e) => {
+    //TODO:
     let sources = await desktopCapturer.getSources({
       types: ['screen'],
       thumbnailSize: getSize()

@@ -12,6 +12,7 @@
 <script setup>
 import { ref } from "vue";
 const { ipcRenderer } = window.electron;
+const { bridgeEvent } = window.api;
 const previewImage = ref("");
 
 async function handleCutScreen() {
