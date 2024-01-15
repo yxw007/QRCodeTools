@@ -12,18 +12,19 @@ import Konva from "konva";
 import { ref, onMounted } from "vue";
 
 const { ipcRenderer } = window.electron;
+const { bridgeEvent } = window.api;
 let container = ref(null);
 let bg = ref("");
 let stage, layer, rect, transformer;
 
 onMounted(() => {
-	ipcRenderer.send("CUT_CURRENT_SCREEN");
-	ipcRenderer.removeListener("GET_CURRENT_SCREEN_IMAGE", getSource);
-	ipcRenderer.on("GET_CURRENT_SCREEN_IMAGE", getSource);
-	ipcRenderer.on("CONFIRM_CUT_SCREEN_REGION", confirmCut);
+	ipcRenderer.send(bridgeEvent.CUT_CURRENT_SCREEN);
+	ipcRenderer.removeListener(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, getCurrentScreenImage);
+	ipcRenderer.on(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, getCurrentScreenImage);
+	ipcRenderer.on(bridgeEvent.CONFIRM_CUT_SCREEN_REGION, confirmCutScreenRegion);
 });
 
-async function getSource(event, source) {
+async function getCurrentScreenImage(event, source) {
 	const { thumbnail } = source;
 	const pngData = await thumbnail.toDataURL("image/png");
 	bg.value = pngData;
@@ -130,7 +131,7 @@ async function getCutImage(info) {
 /**
  * 确认截图
  */
-async function confirmCut() {
+async function confirmCutScreenRegion() {
 	const { width, height, x, y, scaleX = 1, scaleY = 1 } = rect.attrs;
 	let _x = width > 0 ? x : x + width * scaleX;
 	let _y = height > 0 ? y : y + height * scaleY;
@@ -140,14 +141,14 @@ async function confirmCut() {
 		width: Math.abs(width) * scaleX,
 		height: Math.abs(height) * scaleY,
 	});
-	ipcRenderer.send("FINISH_CUT_SCREEN_REGION", pic);
+	ipcRenderer.send(bridgeEvent.FINISH_CUT_SCREEN_REGION, pic);
 }
 
 /**
  * 关闭截图
  */
 function closeCut() {
-	ipcRenderer.send("EXIT_SCREEN_CUT");
+	ipcRenderer.send(bridgeEvent.EXIT_SCREEN_CUT);
 }
 </script>
 

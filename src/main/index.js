@@ -10,6 +10,7 @@ import {
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { bridgeEvent } from './constant'
 
 let mainWindow
 let cutWindow
@@ -57,13 +58,13 @@ function createMainWindow() {
 function registerShortcut() {
   //! 截图快捷键
   globalShortcut.register('CommandOrControl+Alt+C', () => {
-    openCutScreen()
+    enterScreenCut()
   })
   globalShortcut.register('Esc', () => {
     closeCutWindow()
     mainWindow.show()
   })
-  globalShortcut.register('Enter', sendFinishCut)
+  globalShortcut.register('Enter', confirmCutScreenRegion)
 }
 
 app.whenReady().then(() => {
@@ -139,11 +140,11 @@ function createCutWindow() {
   cutWindow.setFullScreen(true)
 }
 
-function sendFinishCut() {
-  cutWindow && cutWindow.webContents.send('CONFIRM_CUT_SCREEN_REGION')
+function confirmCutScreenRegion() {
+  cutWindow && cutWindow.webContents.send(bridgeEvent.CONFIRM_CUT_SCREEN_REGION)
 }
 
-function openCutScreen() {
+function enterScreenCut() {
   closeCutWindow()
   mainWindow.hide()
   createCutWindow()
@@ -151,21 +152,22 @@ function openCutScreen() {
 }
 
 function openMainListener() {
-  ipcMain.on('ENTER_SCREEN_CUT', openCutScreen)
-  ipcMain.on('CUT_CURRENT_SCREEN', async (e) => {
+  ipcMain.on(bridgeEvent.ENTER_SCREEN_CUT, enterScreenCut)
+  ipcMain.on(bridgeEvent.CUT_CURRENT_SCREEN, async (e) => {
     //TODO:
+    debugger
     let sources = await desktopCapturer.getSources({
       types: ['screen'],
       thumbnailSize: getSize()
     })
-    cutWindow && cutWindow.webContents.send('GET_CURRENT_SCREEN_IMAGE', sources[0])
+    cutWindow && cutWindow.webContents.send(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, sources[0])
   })
-  ipcMain.on('FINISH_CUT_SCREEN_REGION', async (e, cutInfo) => {
+  ipcMain.on(bridgeEvent.FINISH_CUT_SCREEN_REGION, async (e, cutInfo) => {
     closeCutWindow()
-    mainWindow.webContents.send('GET_CUT_IMAGE_INFO', cutInfo)
+    mainWindow.webContents.send(bridgeEvent.GET_CUT_IMAGE_INFO, cutInfo)
     mainWindow.show()
   })
-  ipcMain.on('EXIT_SCREEN_CUT', async (e) => {
+  ipcMain.on(bridgeEvent.EXIT_SCREEN_CUT, async (e) => {
     closeCutWindow()
     mainWindow.show()
   })
