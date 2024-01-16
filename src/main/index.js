@@ -137,7 +137,7 @@ function createCutWindow(currentScreen) {
     console.log('createCutWindow: loadURL=', url)
     cutWindow.loadURL(url)
   } else {
-    cutWindow.loadFile(path.join(__dirname, '../renderer/index.html'))
+    cutWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
   cutWindow.maximize()
