@@ -25,6 +25,7 @@ onMounted(() => {
 });
 
 async function getCurrentScreenImage(event, source) {
+	console.log("getCurrentScreenImage:", source);
 	const { thumbnail } = source;
 	const pngData = await thumbnail.toDataURL("image/png");
 	bg.value = pngData;
@@ -76,6 +77,7 @@ function onMouseDown(e) {
 	rectOption.y = pageY || 0;
 	rect = createRect(layer, pageX, pageY, 0, 0, 0.25, false);
 	rect.draw();
+	ipcRenderer.send(bridgeEvent.STOP_CHECK_MOUSE_MOVE);
 }
 
 function onMouseMove(e) {

@@ -35,3 +35,9 @@ $ yarn build:linux
 
 ## Effect
 ![](https://cdn.jsdelivr.net/gh/yxw007/BlogPicBed@master//img/20240110195937.gif)
+
+## TODO
+- [x] 支持多屏截图
+- [ ] 支持截图识别二维码
+- [ ] 支持上传图片识别二维码
+

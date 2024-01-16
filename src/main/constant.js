@@ -14,6 +14,8 @@ export const bridgeEvent = {
   FINISH_CUT_SCREEN_REGION: 'FINISH_CUT_SCREEN_REGION',
   /** ipcMain to Home Page ipcRender: 获取屏幕裁剪区域截图 */
   GET_CUT_IMAGE_INFO: 'GET_CUT_IMAGE_INFO',
+  /** Cut Page ipcRender to ipcMain: 停止检查鼠标移动  */
+  STOP_CHECK_MOUSE_MOVE: 'STOP_CHECK_MOUSE_MOVE',
   /** ipcMain: 退出屏幕截图 */
   EXIT_SCREEN_CUT: 'EXIT_SCREEN_CUT'
 }
