@@ -34,7 +34,7 @@ $ yarn build:linux
 ```
 
 ## Effect
-![](https://cdn.jsdelivr.net/gh/yxw007/BlogPicBed@master//img/20240110195937.gif)
+![](./docs/effect-1.gif)
 
 ## TODO
 - [x] 支持多屏截图
@@ -42,3 +42,5 @@ $ yarn build:linux
 - [ ] 支持上传图片识别二维码
 - [ ] 支持自动检测更新
 
+## 截图实现流程
+![](./docs/截图过程.png)
