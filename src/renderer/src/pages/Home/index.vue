@@ -28,7 +28,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-	ipcRenderer.removeListener(bridgeEvent.GET_CUT_IMAGE_INFO);
+	ipcRenderer.removeListener(bridgeEvent.GET_CUT_IMAGE_INFO, getCutImageInfo);
 })
 
 function getCutImageInfo(event, pic) {

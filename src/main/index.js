@@ -11,7 +11,11 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { bridgeEvent } from './constant'
+import log from 'electron-log/main'
+import Logger from './logger'
 
+log.initialize()
+let logger = new Logger(log, 'main process')
 let mainWindow = null
 let cutWindow = null
 let checkMouseMoveTimer = null
@@ -43,12 +47,15 @@ function createMainWindow() {
     return { action: 'deny' }
   })
 
-  console.log('loadURL:', process.env['ELECTRON_RENDERER_URL'])
-
+  let url = ''
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    url = process.env['ELECTRON_RENDERER_URL']
+    mainWindow.loadURL(url)
+    logger.info('mainWindow: loadURL=', url)
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    url = join(__dirname, '../renderer/index.html')
+    mainWindow.loadFile(url)
+    logger.info('mainWindow: loadFile=', url)
   }
 
   mainWindow.on('closed', () => {
@@ -57,6 +64,7 @@ function createMainWindow() {
 }
 
 function registerShortcut() {
+  logger.info('registerShortcut')
   //! 截图快捷键
   globalShortcut.register('CommandOrControl+Alt+C', () => {
     enterScreenCut()
@@ -123,6 +131,7 @@ function createCutWindow(currentScreen) {
     fullscreen: true,
     simpleFullscreen: true,
     alwaysOnTop: false,
+    parent: mainWindow,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       nodeIntegration: true,
@@ -130,18 +139,24 @@ function createCutWindow(currentScreen) {
     }
   })
 
-  console.log('createCutWindow:', is.dev, process.env['ELECTRON_RENDERER_URL'])
-
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     let url = process.env['ELECTRON_RENDERER_URL'] + '/#/cut'
-    console.log('createCutWindow: loadURL=', url)
     cutWindow.loadURL(url)
+    logger.info('createCutWindow: loadURL=', url)
   } else {
-    cutWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    let url = join(__dirname, '../renderer/index.html')
+    cutWindow.loadFile(url, {
+      hash: '#cut'
+    })
+    logger.info('createCutWindow: loadFile=', url)
   }
 
-  cutWindow.maximize()
-  cutWindow.setFullScreen(true)
+  cutWindow.on('ready-to-show', () => {
+    cutWindow.maximize()
+    cutWindow.setFullScreen(true)
+    cutWindow.show()
+  })
+
   return cutWindow
 }
 
@@ -149,25 +164,25 @@ function confirmCutScreenRegion() {
   cutWindow && cutWindow.webContents.send(bridgeEvent.CONFIRM_CUT_SCREEN_REGION)
 }
 
+function createCutWindowByCursorPos() {
+  const cursorPos = screen.getCursorScreenPoint()
+  //! 获取光标所在的屏幕
+  const currentScreen = screen.getDisplayNearestPoint(cursorPos)
+  if (cutWindow == null) {
+    cutWindow = createCutWindow(currentScreen)
+    return
+  }
+  //! 获取截图窗口屏幕
+  const windowScreen = screen.getDisplayMatching(cutWindow.getBounds())
+  //! 如果光标所在屏幕与cutWindow 不是同一个屏幕就将cutWindow销毁，然后在光标屏幕创建cutWindow
+  if (currentScreen.id !== windowScreen.id) {
+    cutWindow.destroy()
+    cutWindow = createCutWindow(currentScreen)
+  }
+}
+
 function startCheckMouseMove() {
-  checkMouseMoveTimer = setInterval(() => {
-    const cursorPos = screen.getCursorScreenPoint()
-    //! 获取光标所在的屏幕
-    const currentScreen = screen.getDisplayNearestPoint(cursorPos)
-    if (cutWindow == null) {
-      cutWindow = createCutWindow(currentScreen)
-      cutWindow.show()
-      return
-    }
-    //! 获取截图窗口屏幕
-    const windowScreen = screen.getDisplayMatching(cutWindow.getBounds())
-    //! 如果光标所在屏幕与cutWindow 不是同一个屏幕就将cutWindow销毁，然后在光标屏幕创建cutWindow
-    if (currentScreen.id !== windowScreen.id) {
-      cutWindow.destroy()
-      cutWindow = createCutWindow(currentScreen)
-      cutWindow.show()
-    }
-  }, 500)
+  checkMouseMoveTimer = setInterval(createCutWindowByCursorPos, 500)
 }
 
 function stopCheckMouseMove() {
@@ -186,6 +201,7 @@ function enterScreenCut() {
 function openMainListener() {
   ipcMain.on(bridgeEvent.ENTER_SCREEN_CUT, enterScreenCut)
   ipcMain.on(bridgeEvent.CUT_CURRENT_SCREEN, async (e) => {
+    logger.info('CUT_CURRENT_SCREEN')
     const cursorPos = screen.getCursorScreenPoint()
     const currentScreen = screen.getDisplayNearestPoint(cursorPos)
     let sources = await desktopCapturer.getSources({
@@ -194,12 +210,13 @@ function openMainListener() {
     })
     if (cutWindow) {
       let matchSource = sources.find((it) => it.display_id == currentScreen.id)
-      cutWindow.webContents.send(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, matchSource)
+      logger.info('send matchSource')
+      e.sender.send(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, matchSource)
     }
   })
   ipcMain.on(bridgeEvent.FINISH_CUT_SCREEN_REGION, async (e, cutInfo) => {
     closeCutWindow()
-    console.log('bridgeEvent.GET_CUT_IMAGE_INFO:', bridgeEvent.GET_CUT_IMAGE_INFO)
+    logger.info('FINISH_CUT_SCREEN_REGION')
     mainWindow.webContents.send(bridgeEvent.GET_CUT_IMAGE_INFO, cutInfo)
     mainWindow.show()
   })

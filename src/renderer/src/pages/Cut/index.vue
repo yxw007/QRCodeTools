@@ -9,23 +9,30 @@
 </template>
 <script setup>
 import Konva from "konva";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
+import log from 'electron-log/renderer';
 
 const { ipcRenderer } = window.electron;
-const { bridgeEvent } = window.api;
+const { bridgeEvent, Logger } = window.api;
+let logger = new Logger(log, "Cut page");
 let container = ref(null);
 let bg = ref("");
 let stage, layer, rect, transformer;
 
 onMounted(() => {
+	logger.info("onMounted");
 	ipcRenderer.send(bridgeEvent.CUT_CURRENT_SCREEN);
-	ipcRenderer.removeListener(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, getCurrentScreenImage);
 	ipcRenderer.on(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, getCurrentScreenImage);
 	ipcRenderer.on(bridgeEvent.CONFIRM_CUT_SCREEN_REGION, confirmCutScreenRegion);
 });
 
+onUnmounted(() => {
+	logger.info("onUnmounted");
+	ipcRenderer.removeListener(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, getCurrentScreenImage);
+})
+
 async function getCurrentScreenImage(event, source) {
-	console.log("getCurrentScreenImage:", source);
+	logger.info("getCurrentScreenImage:");
 	const { thumbnail } = source;
 	const pngData = await thumbnail.toDataURL("image/png");
 	bg.value = pngData;
@@ -116,7 +123,7 @@ function createTransformer(rect) {
 
 /**
  * 根据选择区域生成图片
- * @param {*} info 
+ * @param {*} logger.info 
  */
 async function getCutImage(info) {
 	const { x, y, width, height } = info;
