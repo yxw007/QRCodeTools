@@ -1,0 +1,23 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "7594806",
+      "name": "24gl-folderOpen",
+      "font_class": "24gl-folderOpen",
+      "unicode": "eabe",
+      "unicode_decimal": 60094
+    },
+    {
+      "icon_id": "8219241",
+      "name": "截图",
+      "font_class": "jietu",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    }
+  ]
+}

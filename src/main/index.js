@@ -27,9 +27,9 @@ function closeCutWindow() {
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
-    show: false,
+    width: 490,
+    height: 600,
+    show: true,
     autoHideMenuBar: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -73,7 +73,6 @@ function registerShortcut() {
     closeCutWindow()
     mainWindow.show()
   })
-  globalShortcut.register('Enter', confirmCutScreenRegion)
 }
 
 app.whenReady().then(() => {
@@ -155,6 +154,7 @@ function createCutWindow(currentScreen) {
     cutWindow.maximize()
     cutWindow.setFullScreen(true)
     cutWindow.show()
+    globalShortcut.register('Enter', confirmCutScreenRegion)
   })
 
   return cutWindow

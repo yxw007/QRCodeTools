@@ -5,9 +5,9 @@
 </template>
 
 <script setup>
-import Versions from './components/Versions.vue'
 </script>
 
 <style lang="less">
 @import './assets/css/styles.less';
+@import './assets/font/iconfont.css';
 </style>
