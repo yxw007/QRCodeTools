@@ -134,7 +134,11 @@ async function getCutImage(info) {
 	canvas.width = ctx.width = width;
 	canvas.height = ctx.height = height;
 	ctx.drawImage(img, -x, -y, window.innerWidth, window.innerHeight);
-	return canvas.toDataURL("image/png");
+
+	return {
+		base64: canvas.toDataURL("image/png"),
+		imageData: ctx.getImageData(0, 0, width, height)
+	};
 }
 
 /**
@@ -142,15 +146,19 @@ async function getCutImage(info) {
  */
 async function confirmCutScreenRegion() {
 	const { width, height, x, y, scaleX = 1, scaleY = 1 } = rect.attrs;
+	let w = Math.abs(width) * scaleX;
+	let h = Math.abs(height) * scaleY;
 	let _x = width > 0 ? x : x + width * scaleX;
 	let _y = height > 0 ? y : y + height * scaleY;
-	let pic = await getCutImage({
+	let { base64, imageData } = await getCutImage({
 		x: _x,
 		y: _y,
-		width: Math.abs(width) * scaleX,
-		height: Math.abs(height) * scaleY,
+		width: w,
+		height: h,
 	});
-	ipcRenderer.send(bridgeEvent.FINISH_CUT_SCREEN_REGION, pic);
+	ipcRenderer.send(bridgeEvent.FINISH_CUT_SCREEN_REGION, {
+		base64, imageData: imageData.data, w, h,
+	});
 }
 
 /**

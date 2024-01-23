@@ -6,4 +6,7 @@ export default class Logger {
   info(...args) {
     this.log.info(this.region, ':', ...args)
   }
+  error(...args) {
+    this.log.error(this.region, ':', ...args)
+  }
 }

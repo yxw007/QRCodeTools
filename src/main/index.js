@@ -70,6 +70,7 @@ function registerShortcut() {
     enterScreenCut()
   })
   globalShortcut.register('Esc', () => {
+    stopCheckMouseMove()
     closeCutWindow()
     mainWindow.show()
   })
@@ -154,6 +155,7 @@ function createCutWindow(currentScreen) {
     cutWindow.maximize()
     cutWindow.setFullScreen(true)
     cutWindow.show()
+    globalShortcut.unregister('Enter')
     globalShortcut.register('Enter', confirmCutScreenRegion)
   })
 
@@ -161,6 +163,7 @@ function createCutWindow(currentScreen) {
 }
 
 function confirmCutScreenRegion() {
+  logger.info('confirmCutScreenRegion')
   cutWindow && cutWindow.webContents.send(bridgeEvent.CONFIRM_CUT_SCREEN_REGION)
 }
 

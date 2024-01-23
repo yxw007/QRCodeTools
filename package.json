@@ -19,11 +19,13 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.0",
     "@electron-toolkit/utils": "^3.0.0",
+    "electron-log": "^5.0.3",
     "electron-updater": "^6.1.7",
+    "jsqr": "^1.4.0",
     "konva": "^9.3.0",
+    "qrcode": "^1.5.3",
     "vue": "^3.4.5",
-    "vue-router": "^4.2.5",
-    "electron-log": "^5.0.3"
+    "vue-router": "^4.2.5"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^1.0.1",

@@ -14,14 +14,18 @@
 						 :src="previewImage" />
 			</div>
 			<div class="downer">
-				<div class="tips">识别内容 <button>↑ 生成二维码</button></div>
+				<div class="tips">识别内容
+					<button class="copy"
+									@click.self="copyContent"> {{ isAlreadyCopy ? "已复制" : "复制内容" }}</button>
+					<button @click.self="generateQr">↑ 生成二维码</button>
+				</div>
 				<textarea class="area"
 									cols="40"
 									rows="10"
 									placeholder="二维码内容"
+									v-model="code"
 									@focusin="onFocusin">
 				</textarea>
-				<button class="copy">复制内容</button>
 			</div>
 		</div>
 	</div>
@@ -30,9 +34,14 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
+import jsQR from "jsqr";
+import QRCode from 'qrcode'
 const { ipcRenderer } = window.electron;
 const { bridgeEvent } = window.api;
+
 const previewImage = ref("");
+const code = ref("");
+const isAlreadyCopy = ref(false);
 
 async function handleCutScreen() {
 	await ipcRenderer.send(bridgeEvent.ENTER_SCREEN_CUT);
@@ -60,8 +69,11 @@ onUnmounted(() => {
 	ipcRenderer.removeListener(bridgeEvent.GET_CUT_IMAGE_INFO, getCutImageInfo);
 })
 
-function getCutImageInfo(event, pic) {
-	previewImage.value = pic;
+function getCutImageInfo(event, { base64, imageData, w, h }) {
+	previewImage.value = base64;
+	let data = jsQR.default(imageData, w, h);
+	code.value = data.data ?? "";
+	isAlreadyCopy.value = false;
 }
 
 function onFocusin(event) {
@@ -72,6 +84,26 @@ function onFocusin(event) {
 	target.selectionStart = target.value.length;
 }
 
+async function copyContent() {
+	try {
+		await navigator.clipboard.writeText(code.value);
+		console.info("Content copied to clipboard");
+		/* Resolved - 文本被成功复制到剪贴板 */
+		isAlreadyCopy.value = true;
+	} catch (err) {
+		console.error('Failed to copy: ', err);
+	}
+}
+
+async function generateQr() {
+	if (!code.value || code.value.length == 0) {
+		return;
+	}
+	let base64 = await QRCode.toDataURL(code.value);
+	console.log("generateQr:");
+	console.log(base64);
+	previewImage.value = base64;
+}
 </script>
 
 <style lang="less">
@@ -110,7 +142,7 @@ function onFocusin(event) {
 			img {
 				width: 100%;
 				height: 100%;
-				object-fit: cover;
+				object-fit: contain;
 			}
 		}
 
