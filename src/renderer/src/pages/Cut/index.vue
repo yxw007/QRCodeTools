@@ -2,6 +2,7 @@
 	<div class="container"
 			 :style="'background-image:url(' + bg + ')'"
 			 ref="container"
+			 @dblclick="onDbClick"
 			 @mousedown="onMouseDown"
 			 @mousemove="onMouseMove"
 			 @mouseup="onMouseUp">
@@ -23,7 +24,6 @@ onMounted(() => {
 	logger.info("onMounted");
 	ipcRenderer.send(bridgeEvent.CUT_CURRENT_SCREEN);
 	ipcRenderer.on(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, getCurrentScreenImage);
-	ipcRenderer.on(bridgeEvent.CONFIRM_CUT_SCREEN_REGION, confirmCutScreenRegion);
 });
 
 onUnmounted(() => {
@@ -110,6 +110,10 @@ function onMouseUp(e) {
 	rect.draw();
 	transformer = createTransformer(rect);
 	layer.add(transformer);
+}
+
+function onDbClick() {
+	confirmCutScreenRegion();
 }
 
 function createTransformer(rect) {
