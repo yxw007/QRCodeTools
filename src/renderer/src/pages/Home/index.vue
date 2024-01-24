@@ -56,7 +56,7 @@ const menus = ref([
 	{
 		name: "上传识别",
 		icon: "icon-24gl-folderOpen",
-		action: null
+		action: handleUpload
 	},
 ]);
 
@@ -104,6 +104,50 @@ async function generateQr() {
 	console.log(base64);
 	previewImage.value = base64;
 }
+
+function getImageData(dataUrl) {
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+		img.src = dataUrl;
+		img.addEventListener("load", () => {
+			const canvas = document.createElement('canvas');
+			const ctx = canvas.getContext('2d');
+
+			canvas.width = img.width;
+			canvas.height = img.height;
+			ctx.drawImage(img, 0, 0, img.width, img.height);
+
+			resolve(ctx.getImageData(0, 0, img.width, img.height));
+		});
+	});
+}
+
+function decodeQRCode(imageData) {
+	const code = jsQR.default(imageData.data, imageData.width, imageData.height);
+	return code ? code.data : null;
+}
+
+function handleUpload() {
+	var input = document.createElement('input');
+	input.type = 'file';
+	input.accept = "image/png,image/jpeg"
+	input.onchange = event => {
+		const file = event.target.files[0];
+		if (file) {
+			const reader = new FileReader();
+			reader.onload = async function (e) {
+				previewImage.value = e.target.result;
+				const imageData = await getImageData(e.target.result);
+				code.value = decodeQRCode(imageData);
+				isAlreadyCopy.value = false;
+			};
+			reader.readAsDataURL(file);
+		}
+	}
+
+	input.click();
+}
+
 </script>
 
 <style lang="less">
