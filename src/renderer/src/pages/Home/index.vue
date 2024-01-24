@@ -4,7 +4,13 @@
 			<li v-for="(menu, index) in menus"
 					:key="index"
 					@click="menu.action">
-				<i :class="'iconfont ' + menu.icon"></i>
+				<el-tooltip class="box-item"
+										effect="dark"
+										:content="menu.name"
+										placement="top-start">
+					<i :class="'iconfont ' + menu.icon"></i>
+				</el-tooltip>
+
 			</li>
 		</ul>
 
@@ -17,12 +23,18 @@
 				<div class="tips">识别内容
 					<button class="copy"
 									@click.self="copyContent"> {{ isAlreadyCopy ? "已复制" : "复制内容" }}</button>
-					<button @click.self="generateQr">↑ 生成二维码</button>
+					<el-tooltip class="box-item"
+											effect="dark"
+											content="根据内容生成二维码"
+											placement="top-start">
+						<button @click.self="generateQr">↑ 生成二维码</button>
+					</el-tooltip>
 				</div>
 				<textarea class="area"
 									cols="40"
 									rows="10"
 									placeholder="二维码内容"
+									spellcheck="false"
 									v-model="code"
 									@focusin="onFocusin">
 				</textarea>
@@ -49,12 +61,12 @@ async function handleCutScreen() {
 
 const menus = ref([
 	{
-		name: "截图识别",
+		name: "截图识别二维码",
 		icon: "icon-jietu",
 		action: handleCutScreen
 	},
 	{
-		name: "上传识别",
+		name: "上传识别二维码",
 		icon: "icon-24gl-folderOpen",
 		action: handleUpload
 	},
@@ -194,7 +206,8 @@ function handleUpload() {
 			margin: 4px 0;
 
 			button {
-				float: right
+				float: right;
+				margin-left: 10px;
 			}
 		}
 
