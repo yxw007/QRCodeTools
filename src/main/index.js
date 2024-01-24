@@ -178,7 +178,7 @@ function createCutWindowByCursorPos() {
 }
 
 function startCheckMouseMove() {
-  checkMouseMoveTimer = setInterval(createCutWindowByCursorPos, 500)
+  checkMouseMoveTimer = setInterval(createCutWindowByCursorPos, 200)
 }
 
 function stopCheckMouseMove() {
