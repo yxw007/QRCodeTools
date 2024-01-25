@@ -38,6 +38,5 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: github
-  owner: yxw007
-  repo: QRCodeTools
+  provider: generic
+  url: https://example.com/auto-updates
