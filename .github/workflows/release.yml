@@ -22,20 +22,23 @@ jobs:
         with:
           node-version: 16
 
+      - name: Install yarn
+        run: npm install yarn -g
+
       - name: Install Dependencies
-        run: npm install
+        run: yarn install
 
       - name: build-linux
         if: matrix.os == 'ubuntu-latest'
-        run: npm run build:linux
+        run: yarn build:linux
 
       - name: build-mac
         if: matrix.os == 'macos-latest'
-        run: npm run build:mac
+        run: yarn build:mac
 
       - name: build-win
         if: matrix.os == 'windows-latest'
-        run: npm run build:win
+        run: yarn build:win
 
       - name: release
         uses: softprops/action-gh-release@v1
