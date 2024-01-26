@@ -2,3 +2,6 @@ node_modules
 dist
 out
 .gitignore
+.eslintignore
+/src/renderer/src/assets/**/*.js
+/src/**/*.d.ts

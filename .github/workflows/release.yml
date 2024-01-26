@@ -7,12 +7,11 @@ on:
 
 jobs:
   release:
-    permissions: write-all
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [windows-latest]
 
     steps:
       - name: Check out Git repository

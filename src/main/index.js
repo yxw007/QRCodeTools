@@ -219,7 +219,7 @@ function openMainListener() {
   ipcMain.on(bridgeEvent.STOP_CHECK_MOUSE_MOVE, () => {
     stopCheckMouseMove()
   })
-  ipcMain.on(bridgeEvent.EXIT_SCREEN_CUT, async (e) => {
+  ipcMain.on(bridgeEvent.EXIT_SCREEN_CUT, async () => {
     closeCutWindow()
     mainWindow.show()
   })
