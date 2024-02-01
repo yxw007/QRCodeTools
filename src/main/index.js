@@ -13,16 +13,21 @@ import icon from '../../resources/icon.png?asset'
 import { bridgeEvent } from './constant'
 import log from 'electron-log/main'
 import Logger from './logger'
+import run from './autoUpdater'
 
 log.initialize()
 let logger = new Logger(log, 'main process')
 let mainWindow = null
 let cutWindow = null
 let checkMouseMoveTimer = null
-
+let { checkForUpdatesAndNotify } = run(onUpdateMessage)
 function closeCutWindow() {
   cutWindow && cutWindow.close()
   cutWindow = null
+}
+
+function onUpdateMessage(msg) {
+  log.info(msg)
 }
 
 function createMainWindow() {
@@ -95,6 +100,8 @@ app.whenReady().then(() => {
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
   })
+
+  checkForUpdatesAndNotify()
 })
 
 app.on('window-all-closed', () => {
