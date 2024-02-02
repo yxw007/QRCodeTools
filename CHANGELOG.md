@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1-1](https://github.com/yxw007/QRCodeTools/compare/v1.0.1-0...v1.0.1-1) (2024-02-02)
+
+
+### Bug Fixes
+
+* 更新热更配置错误，导致无法拉取最新版本问题 ([e8c85df](https://github.com/yxw007/QRCodeTools/commit/e8c85df34578d7013c16d2381f80fd57bc65e901))
+
 ### [1.0.1-0](https://github.com/yxw007/QRCodeTools/compare/v1.0.0...v1.0.1-0) (2024-02-02)
 
 

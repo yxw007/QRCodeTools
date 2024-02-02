@@ -1,3 +1,3 @@
 provider: generic
-url: https://example.com/auto-updates
+url: https://github.com/yxw007/QRCodeTools/releases
 updaterCacheDirName: qrcode-tools-updater
