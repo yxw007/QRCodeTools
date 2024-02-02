@@ -38,5 +38,6 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://github.com/yxw007/QRCodeTools/releases
+  provider: github
+  owner: yxw007
+  repo: QRCodeTools

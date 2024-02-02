@@ -6,8 +6,7 @@ import {
   screen,
   desktopCapturer,
   globalShortcut,
-  Menu,
-  MenuItem
+  Menu
 } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
