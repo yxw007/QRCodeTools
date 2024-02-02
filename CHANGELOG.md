@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.1-0](https://github.com/yxw007/QRCodeTools/compare/v1.0.0...v1.0.1-0) (2024-02-02)
+
+
+### Features
+
+* 添加自定义菜单 ([4769fb1](https://github.com/yxw007/QRCodeTools/commit/4769fb1634b79bd2835ebb3e86cddc2d26d41360))
+
 ## [1.0.0](https://github.com/yxw007/QRCodeTools/compare/v1.0.0-6...v1.0.0) (2024-02-02)
 
 
