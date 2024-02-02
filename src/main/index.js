@@ -5,7 +5,9 @@ import {
   ipcMain,
   screen,
   desktopCapturer,
-  globalShortcut
+  globalShortcut,
+  Menu,
+  MenuItem
 } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -14,6 +16,7 @@ import { bridgeEvent } from './constant'
 import log from 'electron-log/main'
 import Logger from './logger'
 import run from './autoUpdater'
+import defaultMenu from './appMenu'
 
 log.initialize()
 let logger = new Logger(log, 'main process')
@@ -42,6 +45,10 @@ function createMainWindow() {
       sandbox: false
     }
   })
+
+  const menuTemplate = defaultMenu(app, shell)
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(menu)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()

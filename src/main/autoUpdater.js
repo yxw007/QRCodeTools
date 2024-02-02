@@ -1,3 +1,4 @@
+import { dialog } from 'electron'
 import log from 'electron-log/main'
 import { autoUpdater } from 'electron-updater'
 
@@ -40,10 +41,19 @@ function run(onMessage) {
     log_message = log_message + ' - Downloaded ' + normalSpeedPercent(progressObj.percent)
     onMessage(log_message)
   })
-  autoUpdater.on('update-downloaded', (info) => {
+  autoUpdater.on('update-downloaded', () => {
     onMessage('Update downloaded')
-    //! 下载完后立即更新
-    autoUpdater.quitAndInstall()
+    const optionIdx = dialog.showMessageBoxSync({
+      type: 'info',
+      title: 'Update',
+      message: '发现新版本，点击确认Ok更新',
+      buttons: ['OK']
+    })
+    if (optionIdx == 0) {
+      onMessage('quitAndInstall')
+      //! 下载完后立即更新
+      autoUpdater.quitAndInstall()
+    }
   })
 
   return { checkForUpdatesAndNotify: autoUpdater.checkForUpdatesAndNotify.bind(autoUpdater) }
