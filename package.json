@@ -1,6 +1,6 @@
 {
   "name": "qrcode-tools",
-  "version": "1.0.1-1",
+  "version": "1.0.1-2",
   "description": "An Electron application with Vue",
   "main": "./out/main/index.js",
   "author": "Potter<aa4790139@gmail.com>",
