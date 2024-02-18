@@ -5,9 +5,6 @@ on:
     tags:
       - v*.*.*
 
-permissions:
-  contents: write
-
 jobs:
   release:
     runs-on: ${{ matrix.os }}
@@ -38,7 +35,6 @@ jobs:
       - name: release
         uses: softprops/action-gh-release@v1
         with:
-          token: ${{ secrets.ACCESS_TOKEN }}
           draft: true
           files: |
             dist/*.exe
@@ -53,4 +49,3 @@ jobs:
             dist/*.blockmap
         env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
