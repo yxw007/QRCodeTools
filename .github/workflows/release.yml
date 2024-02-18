@@ -7,9 +7,6 @@ on:
 
 jobs:
   release:
-    permissions:
-      contents: write
-
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -36,7 +33,7 @@ jobs:
         run: yarn build:win
 
       - name: release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v0.1.15
         with:
           draft: true
           files: |
