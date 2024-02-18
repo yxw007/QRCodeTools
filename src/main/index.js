@@ -5,7 +5,8 @@ import {
   ipcMain,
   screen,
   desktopCapturer,
-  globalShortcut
+  globalShortcut,
+  Menu
 } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
@@ -13,16 +14,22 @@ import icon from '../../resources/icon.png?asset'
 import { bridgeEvent } from './constant'
 import log from 'electron-log/main'
 import Logger from './logger'
+import run from './autoUpdater'
+import defaultMenu from './appMenu'
 
 log.initialize()
 let logger = new Logger(log, 'main process')
 let mainWindow = null
 let cutWindow = null
 let checkMouseMoveTimer = null
-
+let { checkForUpdatesAndNotify } = run(onUpdateMessage)
 function closeCutWindow() {
   cutWindow && cutWindow.close()
   cutWindow = null
+}
+
+function onUpdateMessage(msg) {
+  log.info(msg)
 }
 
 function createMainWindow() {
@@ -37,6 +44,10 @@ function createMainWindow() {
       sandbox: false
     }
   })
+
+  const menuTemplate = defaultMenu(app, shell)
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  Menu.setApplicationMenu(menu)
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -95,6 +106,8 @@ app.whenReady().then(() => {
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
   })
+
+  checkForUpdatesAndNotify()
 })
 
 app.on('window-all-closed', () => {

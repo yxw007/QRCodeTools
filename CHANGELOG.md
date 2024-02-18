@@ -1,5 +1,37 @@
 # Changelog
 
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [1.0.1](https://github.com/yxw007/QRCodeTools/compare/v1.0.1-1...v1.0.1) (2024-02-18)
+
+
+### Bug Fixes
+
+* 解决热更新报错 ([5b34b54](https://github.com/yxw007/QRCodeTools/commit/5b34b5470c7d08b6ef07b7dd6d1b1ac3c324db17))
+
+### [1.0.1-2](https://github.com/yxw007/QRCodeTools/compare/v1.0.1-1...v1.0.1-2) (2024-02-02)
+
+### [1.0.1-1](https://github.com/yxw007/QRCodeTools/compare/v1.0.1-0...v1.0.1-1) (2024-02-02)
+
+
+### Bug Fixes
+
+* 更新热更配置错误，导致无法拉取最新版本问题 ([e8c85df](https://github.com/yxw007/QRCodeTools/commit/e8c85df34578d7013c16d2381f80fd57bc65e901))
+
+### [1.0.1-0](https://github.com/yxw007/QRCodeTools/compare/v1.0.0...v1.0.1-0) (2024-02-02)
+
+
+### Features
+
+* 添加自定义菜单 ([4769fb1](https://github.com/yxw007/QRCodeTools/commit/4769fb1634b79bd2835ebb3e86cddc2d26d41360))
+
+## [1.0.0](https://github.com/yxw007/QRCodeTools/compare/v1.0.0-6...v1.0.0) (2024-02-02)
+
+
+### Features
+
+* 添加自动更新功能 ([a2dee38](https://github.com/yxw007/QRCodeTools/commit/a2dee384c8b525241caac09157078b7233154faf))
+
 ## 1.0.0-6 (2024-01-29)
 
 ### Features
