@@ -5,6 +5,9 @@ on:
     tags:
       - v*.*.*
 
+permissions:
+  contents: write
+
 jobs:
   release:
     runs-on: ${{ matrix.os }}
@@ -33,8 +36,9 @@ jobs:
         run: yarn build:win
 
       - name: release
-        uses: softprops/action-gh-release@v0.1.15
+        uses: softprops/action-gh-release@v1
         with:
+          token: ${{ secrets.ACCESS_TOKEN }}
           draft: true
           files: |
             dist/*.exe
