@@ -1,6 +1,6 @@
 {
   "name": "qrcode-tools",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An Electron application with Vue",
   "main": "./out/main/index.js",
   "author": "Potter<aa4790139@gmail.com>",
@@ -12,7 +12,7 @@
     "dev": "electron-vite dev --watch",
     "build": "electron-vite build",
     "postinstall": "electron-builder install-app-deps",
-    "build:win": "npm run build && electron-builder --win --config",
+    "build:win": "npm run build && electron-builder --win --config -p never",
     "build:mac": "npm run build && electron-builder --mac --config",
     "build:linux": "npm run build && electron-builder --linux --config",
     "publish": "electron-builder --win -p always",
