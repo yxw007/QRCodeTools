@@ -3,6 +3,7 @@ import log from 'electron-log/main'
 import Logger from './logger'
 import path from 'path'
 import fs from 'fs'
+import { versionDesc } from './autoUpdater'
 
 let logger = new Logger(log, 'main process')
 
@@ -116,7 +117,7 @@ function openAbout() {
   const dialogOptions = {
     type: 'info',
     title: 'About',
-    message: `Author: ${packageData.author}\nVersion: ${packageData.version}`,
+    message: `Author: ${packageData.author}\nVersion: ${packageData.version} (${versionDesc()})`,
     buttons: ['OK']
   }
   dialog.showMessageBox(dialogOptions)

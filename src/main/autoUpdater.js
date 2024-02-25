@@ -4,6 +4,8 @@ import { autoUpdater } from 'electron-updater'
 
 autoUpdater.logger = log
 autoUpdater.logger.transports.file.level = 'info'
+let isNewest = true
+let newestVersion = null
 
 function normalSpeed(bytesPerSecond) {
   let units = [1, 2 ** 10, 2 ** 20, 2 ** 30, 2 ** 40]
@@ -18,7 +20,7 @@ function normalSpeed(bytesPerSecond) {
 }
 
 function normalSpeedPercent(percent) {
-  return `${percent.toFixed(2) * 100}%`
+  return `${percent.toFixed(2)}%`
 }
 
 function run(onMessage) {
@@ -29,6 +31,8 @@ function run(onMessage) {
   })
   autoUpdater.on('update-available', (info) => {
     onMessage('Update available.')
+    isNewest = false
+    newestVersion = info.version
   })
   autoUpdater.on('update-not-available', (info) => {
     onMessage('Update not available.')
@@ -60,3 +64,10 @@ function run(onMessage) {
 }
 
 export default run
+
+export function versionDesc() {
+  if (isNewest) {
+    return `已是最新版本`
+  }
+  return `发现新版本${newestVersion}`
+}
