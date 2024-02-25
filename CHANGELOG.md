@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.4](https://github.com/yxw007/QRCodeTools/compare/v1.0.3...v1.0.4) (2024-02-25)
+
+
+### Features
+
+* about页面显示是否发现新版本 ([c739f5b](https://github.com/yxw007/QRCodeTools/commit/c739f5bd393756e542f8de5020f85cb23c8c5a8a))
+
+
+### Bug Fixes
+
+* 不在截图过程中按ESC也有效问题 ([67701d9](https://github.com/yxw007/QRCodeTools/commit/67701d9f54cb16a43e420a8037aea6b55f25f041))
+
 ### [1.0.3](https://github.com/yxw007/QRCodeTools/compare/v1.0.2...v1.0.3) (2024-02-21)
 
 ### [1.0.2](https://github.com/yxw007/QRCodeTools/compare/v1.0.1-1...v1.0.2) (2024-02-18)
