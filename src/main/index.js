@@ -80,11 +80,6 @@ function registerShortcut() {
   globalShortcut.register('CommandOrControl+Alt+C', () => {
     enterScreenCut()
   })
-  globalShortcut.register('Esc', () => {
-    stopCheckMouseMove()
-    closeCutWindow()
-    mainWindow.show()
-  })
 }
 
 app.whenReady().then(() => {
@@ -150,6 +145,18 @@ function createCutWindow(currentScreen) {
       nodeIntegration: true,
       contextIsolation: false
     }
+  })
+
+  cutWindow.on('focus', () => {
+    globalShortcut.register('Esc', () => {
+      stopCheckMouseMove()
+      closeCutWindow()
+      mainWindow.show()
+    })
+  })
+
+  cutWindow.on('blur', () => {
+    globalShortcut.unregister('Esc')
   })
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
