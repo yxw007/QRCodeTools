@@ -1,9 +1,10 @@
-import { dialog } from 'electron'
+import { dialog, ipcMain } from 'electron'
 import log from 'electron-log/main'
 import Logger from './logger'
 import path from 'path'
 import fs from 'fs'
 import { versionDesc } from './autoUpdater'
+import { bridgeEvent } from './constant'
 
 let logger = new Logger(log, 'main process')
 
@@ -102,6 +103,12 @@ function defaultMenu(app, shell) {
         {
           label: 'about',
           click: openAbout
+        },
+        {
+          label: 'shortcut',
+          click: () => {
+            ipcMain.emit(bridgeEvent.OPEN_SHORTCUT_WINDOW)
+          }
         }
       ]
     }

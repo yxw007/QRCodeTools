@@ -11,6 +11,11 @@ const routes = [
     path: '/cut',
     name: 'cut',
     component: () => import('../pages/Cut/index.vue')
+  },
+  {
+    path: "/shortcut",
+    name:"shortcut",
+    component:()=>import("../pages/shortcut/index.vue")
   }
 ]
 

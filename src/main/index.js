@@ -1,85 +1,23 @@
-import {
-  app,
-  shell,
-  BrowserWindow,
-  ipcMain,
-  screen,
-  desktopCapturer,
-  globalShortcut,
-  Menu
-} from 'electron'
-import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
-import { bridgeEvent } from './constant'
+import { app, BrowserWindow, screen, globalShortcut, ipcMain } from 'electron'
+import { electronApp, optimizer } from '@electron-toolkit/utils'
 import log from 'electron-log/main'
-import Logger from './logger'
 import run from './autoUpdater'
-import defaultMenu from './appMenu'
+import { useMainWin, useCutWin, useShortcutWin } from './window'
+import { shortcutKeys, bridgeEvent } from './constant'
+import { useStore } from './store'
+
+const { createMainWin, showMainWin } = useMainWin()
+const { createCutWin } = useCutWin()
+const store = useStore()
+useShortcutWin()
 
 log.initialize()
-let logger = new Logger(log, 'main process')
-let mainWindow = null
-let cutWindow = null
 let checkMouseMoveTimer = null
 let { checkForUpdatesAndNotify } = run(onUpdateMessage)
-function closeCutWindow() {
-  cutWindow && cutWindow.close()
-  cutWindow = null
-}
+let mainWin = null
 
 function onUpdateMessage(msg) {
   log.info(msg)
-}
-
-function createMainWindow() {
-  mainWindow = new BrowserWindow({
-    width: 490,
-    height: 600,
-    show: true,
-    autoHideMenuBar: false,
-    ...(process.platform === 'linux' ? { icon } : {}),
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
-    }
-  })
-
-  const menuTemplate = defaultMenu(app, shell)
-  const menu = Menu.buildFromTemplate(menuTemplate)
-  Menu.setApplicationMenu(menu)
-
-  mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-  })
-
-  mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
-
-  let url = ''
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    url = process.env['ELECTRON_RENDERER_URL']
-    mainWindow.loadURL(url)
-    logger.info('mainWindow: loadURL=', url)
-  } else {
-    url = join(__dirname, '../renderer/index.html')
-    mainWindow.loadFile(url)
-    logger.info('mainWindow: loadFile=', url)
-  }
-
-  mainWindow.on('closed', () => {
-    closeCutWindow()
-  })
-}
-
-function registerShortcut() {
-  logger.info('registerShortcut')
-  //! 截图快捷键
-  globalShortcut.register('CommandOrControl+Alt+C', () => {
-    enterScreenCut()
-  })
 }
 
 app.whenReady().then(() => {
@@ -94,12 +32,23 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  createMainWindow()
-  registerShortcut()
-  openMainListener()
+  mainWin = createMainWin()
+
+  function updateShortcutKey(event, oldKey, newKey) {
+    log.info("updateShortcutKey: ", `oldKey=${oldKey},newKey=${newKey}`)
+    globalShortcut.unregister(oldKey);
+    globalShortcut.register(newKey, enterScreenCut);
+  }
+
+  ipcMain.on(bridgeEvent.STOP_CHECK_MOUSE_MOVE, stopCheckMouseMove)
+  ipcMain.on(bridgeEvent.ENTER_SCREEN_CUT, enterScreenCut)
+  ipcMain.on(bridgeEvent.UPDATE_SHORTCUT_KEY, updateShortcutKey);
+  globalShortcut.register(store.get(shortcutKeys.shortcut_snapshot), enterScreenCut)
 
   app.on('activate', function () {
-    if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
+    if (BrowserWindow.getAllWindows().length === 0) {
+      mainWin = createMainWin()
+    }
   })
 
   checkForUpdatesAndNotify()
@@ -112,92 +61,25 @@ app.on('window-all-closed', () => {
   }
 })
 
-function getSize(currentScreen) {
-  const { size, scaleFactor } = currentScreen
-  return {
-    width: size.width * scaleFactor,
-    height: size.height * scaleFactor
-  }
-}
-
-function createCutWindow(currentScreen) {
-  const { width, height } = getSize(currentScreen)
-  const { bounds } = currentScreen
-  cutWindow = new BrowserWindow({
-    x: bounds.x,
-    y: bounds.y,
-    width,
-    height,
-    autoHideMenuBar: true,
-    useContentSize: true,
-    movable: false,
-    frame: false,
-    resizable: false,
-    hasShadow: false,
-    transparent: true,
-    fullscreenable: true,
-    fullscreen: true,
-    simpleFullscreen: true,
-    alwaysOnTop: false,
-    parent: mainWindow,
-    webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      nodeIntegration: true,
-      contextIsolation: false
-    }
-  })
-
-  cutWindow.on('focus', () => {
-    globalShortcut.register('Esc', () => {
-      stopCheckMouseMove()
-      closeCutWindow()
-      mainWindow.show()
-    })
-  })
-
-  cutWindow.on('blur', () => {
-    globalShortcut.unregister('Esc')
-  })
-
-  if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    let url = process.env['ELECTRON_RENDERER_URL'] + '/#/cut'
-    cutWindow.loadURL(url)
-    logger.info('createCutWindow: loadURL=', url)
-  } else {
-    let url = join(__dirname, '../renderer/index.html')
-    cutWindow.loadFile(url, {
-      hash: '#cut'
-    })
-    logger.info('createCutWindow: loadFile=', url)
-  }
-
-  cutWindow.on('ready-to-show', () => {
-    cutWindow.maximize()
-    cutWindow.setFullScreen(true)
-    cutWindow.show()
-  })
-
-  return cutWindow
-}
-
-function createCutWindowByCursorPos() {
-  const cursorPos = screen.getCursorScreenPoint()
-  //! 获取光标所在的屏幕
-  const currentScreen = screen.getDisplayNearestPoint(cursorPos)
-  if (cutWindow == null) {
-    cutWindow = createCutWindow(currentScreen)
-    return
-  }
-  //! 获取截图窗口屏幕
-  const windowScreen = screen.getDisplayMatching(cutWindow.getBounds())
-  //! 如果光标所在屏幕与cutWindow 不是同一个屏幕就将cutWindow销毁，然后在光标屏幕创建cutWindow
-  if (currentScreen.id !== windowScreen.id) {
-    cutWindow.destroy()
-    cutWindow = createCutWindow(currentScreen)
-  }
-}
-
 function startCheckMouseMove() {
+  let cutWindow = null
+  function createCutWindowByCursorPos() {
+    const cursorPos = screen.getCursorScreenPoint()
+    //! 获取光标所在的屏幕
+    const currentScreen = screen.getDisplayNearestPoint(cursorPos)
+    if (cutWindow == null) {
+      cutWindow = createCutWin(mainWin, currentScreen, exitScreenCut)
+      return
+    }
+    //! 获取截图窗口屏幕
+    const windowScreen = screen.getDisplayMatching(cutWindow.getBounds())
+    //! 如果光标所在屏幕与cutWindow 不是同一个屏幕就将cutWindow销毁，然后在光标屏幕创建cutWindow
+    if (currentScreen.id !== windowScreen.id) {
+      cutWindow.destroy()
+      cutWindow = createCutWin(mainWin, currentScreen, exitScreenCut)
+    }
+  }
+
   checkMouseMoveTimer = setInterval(createCutWindowByCursorPos, 200)
 }
 
@@ -209,38 +91,11 @@ function stopCheckMouseMove() {
 }
 
 function enterScreenCut() {
-  mainWindow.hide()
   stopCheckMouseMove()
   startCheckMouseMove()
 }
 
-function openMainListener() {
-  ipcMain.on(bridgeEvent.ENTER_SCREEN_CUT, enterScreenCut)
-  ipcMain.on(bridgeEvent.CUT_CURRENT_SCREEN, async (e) => {
-    logger.info('CUT_CURRENT_SCREEN')
-    const cursorPos = screen.getCursorScreenPoint()
-    const currentScreen = screen.getDisplayNearestPoint(cursorPos)
-    let sources = await desktopCapturer.getSources({
-      types: ['screen'],
-      thumbnailSize: getSize(currentScreen)
-    })
-    if (cutWindow) {
-      let matchSource = sources.find((it) => it.display_id == currentScreen.id)
-      logger.info('send matchSource')
-      e.sender.send(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, matchSource)
-    }
-  })
-  ipcMain.on(bridgeEvent.FINISH_CUT_SCREEN_REGION, async (e, cutInfo) => {
-    closeCutWindow()
-    logger.info('FINISH_CUT_SCREEN_REGION')
-    mainWindow.webContents.send(bridgeEvent.GET_CUT_IMAGE_INFO, cutInfo)
-    mainWindow.show()
-  })
-  ipcMain.on(bridgeEvent.STOP_CHECK_MOUSE_MOVE, () => {
-    stopCheckMouseMove()
-  })
-  ipcMain.on(bridgeEvent.EXIT_SCREEN_CUT, async () => {
-    closeCutWindow()
-    mainWindow.show()
-  })
+function exitScreenCut() {
+  stopCheckMouseMove()
+  showMainWin()
 }

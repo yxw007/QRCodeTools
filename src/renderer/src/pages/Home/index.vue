@@ -84,7 +84,7 @@ onUnmounted(() => {
 function getCutImageInfo(event, { base64, imageData, w, h }) {
 	previewImage.value = base64;
 	let data = jsQR.default(imageData, w, h);
-	code.value = data.data ?? "";
+	code.value = data?.data ?? "未识别到二维码";
 	isAlreadyCopy.value = false;
 }
 

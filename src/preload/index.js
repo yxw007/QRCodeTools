@@ -1,12 +1,17 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import { bridgeEvent } from '../main/constant'
+import { bridgeEvent, shortcutKeys } from '../main/constant'
 import Logger from '../main/logger'
+import { useStore } from '../main/store'
+
+const store = useStore()
 
 // Custom APIs for renderer
 const api = {
   bridgeEvent,
-  Logger
+  shortcutKeys,
+  Logger,
+  store
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to
