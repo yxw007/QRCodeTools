@@ -102,6 +102,10 @@ function defaultMenu(app, shell) {
         {
           label: 'about',
           click: openAbout
+        },
+        {
+          label:"shortcut",
+          click: openShortcut
         }
       ]
     }
@@ -121,6 +125,10 @@ function openAbout() {
     buttons: ['OK']
   }
   dialog.showMessageBox(dialogOptions)
+}
+
+function openShortcut(){
+  //TODO: 修改到此处?
 }
 
 export default defaultMenu
