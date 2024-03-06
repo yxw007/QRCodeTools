@@ -1,10 +1,11 @@
-import { app, BrowserWindow, screen, globalShortcut, ipcMain } from 'electron'
+import { app, BrowserWindow, screen, globalShortcut, ipcMain, Tray, nativeImage } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import log from 'electron-log/main'
 import run from './autoUpdater'
 import { useMainWin, useCutWin, useShortcutWin } from './window'
 import { shortcutKeys, bridgeEvent } from './constant'
 import { useStore } from './store'
+import appIconB from "../../resources/icon-b.png?asset";
 
 const { createMainWin, showMainWin } = useMainWin()
 const { createCutWin } = useCutWin()
@@ -44,6 +45,11 @@ app.whenReady().then(() => {
   ipcMain.on(bridgeEvent.ENTER_SCREEN_CUT, enterScreenCut)
   ipcMain.on(bridgeEvent.UPDATE_SHORTCUT_KEY, updateShortcutKey);
   globalShortcut.register(store.get(shortcutKeys.shortcut_snapshot), enterScreenCut)
+
+  //! 创建一个图标托盘
+  let tray = new Tray(nativeImage.createFromPath(appIconB))
+  tray.setToolTip("qrcode-tools");
+  tray.on('click', showMainWin)
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) {

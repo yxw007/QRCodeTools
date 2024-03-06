@@ -6,14 +6,22 @@ import {
   screen,
   desktopCapturer,
   globalShortcut,
-  Menu
+  Menu,
+  nativeImage
 } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import log from 'electron-log/main'
 import defaultMenu from './appMenu'
-import { join } from 'path'
 import Logger from './logger'
 import { bridgeEvent } from './constant'
+import appIcon from "../../resources/icon.png?asset"
+import fs from "fs";
+import { default as path, dirname, join } from "path"
+import { fileURLToPath } from "url"
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const packagePath = path.join(__dirname, '../../package.json')
+const packageData = JSON.parse(fs.readFileSync(packagePath, 'utf-8'))
 
 let logger = new Logger(log, 'main process')
 
@@ -25,6 +33,12 @@ function getSize(currentScreen) {
   }
 }
 
+function preventUpdateWinTitle(win) {
+  win.on('page-title-updated', function (e) {
+    e.preventDefault()
+  });
+}
+
 export function useMainWin() {
   let mainWindow = null
 
@@ -34,13 +48,14 @@ export function useMainWin() {
       height: 600,
       show: true,
       autoHideMenuBar: false,
-      ...(process.platform === 'linux' ? { icon } : {}),
+      icon: nativeImage.createFromPath(appIcon),
+      title: packageData.name,
       webPreferences: {
         preload: join(__dirname, '../preload/index.js'),
         sandbox: false
       }
     })
-
+    preventUpdateWinTitle(mainWindow);
     const menuTemplate = defaultMenu(app, shell)
     const menu = Menu.buildFromTemplate(menuTemplate)
     Menu.setApplicationMenu(menu)
@@ -126,6 +141,7 @@ export function useCutWin() {
       simpleFullscreen: true,
       alwaysOnTop: false,
       parent: parent,
+      icon: nativeImage.createFromPath(appIcon),
       webPreferences: {
         preload: join(__dirname, '../preload/index.js'),
         nodeIntegration: true,
@@ -231,12 +247,15 @@ export function useShortcutWin() {
         resizable: false,
         minimizable: false,
         title: '修改快捷键',
+        icon: nativeImage.createFromPath(appIcon),
         webPreferences: {
           preload: join(__dirname, '../preload/index.js'),
           nodeIntegration: true,
           contextIsolation: false
         }
       })
+      //! 阻止页面标题名替换窗口标题名
+      preventUpdateWinTitle(shortcutWin);
       if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
         let url = process.env['ELECTRON_RENDERER_URL'] + '/#/shortcut'
         shortcutWin.loadURL(url)
@@ -249,9 +268,6 @@ export function useShortcutWin() {
         logger.info('openShortcutWin: loadFile=', url)
       }
     }
-    shortcutWin.on('ready-to-show', () => {
-      shortcutWin.show()
-    })
     shortcutWin.on('closed', closeShortcutWin)
   }
 

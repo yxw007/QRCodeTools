@@ -50,7 +50,7 @@ function run(onMessage) {
     const optionIdx = dialog.showMessageBoxSync({
       type: 'info',
       title: 'Update',
-      message: '发现新版本，点击确认Ok更新',
+      message: '发现新版本，点击确认更新',
       buttons: ['OK']
     })
     if (optionIdx == 0) {
