@@ -20,6 +20,13 @@ export const bridgeEvent = {
   EXIT_SCREEN_CUT: 'EXIT_SCREEN_CUT',
   /* Cut Page ipcRender to ipcMain: 更新快捷键 */
   UPDATE_SHORTCUT_KEY: 'UPDATE_SHORTCUT_KEY',
+  /* 打开快捷键设置面板 */
+  OPEN_SHORTCUT_WINDOW: 'OPEN_SHORTCUT_WINDOW',
   /* 关闭快捷键设置面板 */
-  CLOSE_SHORTCUT_WINDOW: 'CLOSE_SHORTCUT_WINDOW',
+  CLOSE_SHORTCUT_WINDOW: 'CLOSE_SHORTCUT_WINDOW'
+}
+
+export const shortcutKeys = {
+  /* 截图 */
+  shortcut_snapshot: 'shortcut_snapshot'
 }

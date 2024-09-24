@@ -22,8 +22,8 @@ let stage, layer, rect, transformer;
 
 onMounted(() => {
 	logger.info("onMounted");
-	ipcRenderer.send(bridgeEvent.CUT_CURRENT_SCREEN);
 	ipcRenderer.on(bridgeEvent.GET_CURRENT_SCREEN_IMAGE, getCurrentScreenImage);
+	ipcRenderer.send(bridgeEvent.CUT_CURRENT_SCREEN);
 });
 
 onUnmounted(() => {
@@ -113,6 +113,7 @@ function onMouseUp(e) {
 }
 
 function onDbClick() {
+	logger.info("onDbClick");
 	confirmCutScreenRegion();
 }
 
