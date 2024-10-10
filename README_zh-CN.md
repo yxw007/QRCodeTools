@@ -68,3 +68,6 @@ $ yarn build:linux
   - 退出：Esc
 - 完成截图：鼠标双击
 
+## 📄 许可证
+
+qrcode-tools 是在 MIT 许可证下发布的。详情请见 [LICENSE](./LICENSE) 文件。

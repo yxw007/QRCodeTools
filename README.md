@@ -68,3 +68,6 @@ $ yarn build:linux
   - Exit：Esc
 - Finished screenshot: double mouse click
 
+## 📄 License
+
+qrcode-tools is released under the MIT license. for more information, see the [LICENSE](./LICENSE) file.
