@@ -1,12 +1,14 @@
 # qrcode-tools
 
-A screenshot tool implemented based on Electron + Vue
+English | [简体中文](./README_zh-CN.md)
 
-## Recommended IDE Setup
+Very suitable for newcomers to the Electron learning project , it is a simple and easy to use QR code recognition tool ( based on : Electron + Vue implementation ), although it is very small but basically encompasses the entire process of Electron project development .
+
+## 🛠️ Recommended Configurations
 
 - [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
 
-## Project Setup
+## 🖥️ Quick Start
 
 ### Install
 
@@ -20,7 +22,7 @@ $ yarn
 $ yarn dev
 ```
 
-### Build
+### Build 
 
 ```bash
 # For windows
@@ -33,32 +35,36 @@ $ yarn build:mac
 $ yarn build:linux
 ```
 
-## Feature
-- 截图识别二维码
-- 上传识别二维码
-- 根据字符生成二维码
+## ✨ Feature
+- Screenshot to recognize the QR code
+- Upload to recognize the QR code
+- Generate QR code based on characters
 
-## Effect
-![截图识别二维码](./docs/截图识别二维码.gif)
-![上传识别二维码](./docs/上传识别二维码.gif)
-![根据字符生成二维码](./docs/根据字符生成二维码.gif)
+## 🎯 Effect
+- Screenshot to recognize the QR code
+  ![截图识别二维码](./docs/截图识别二维码.gif)
 
-## TODO
-- [x] 支持多屏截图
-- [x] 支持截图识别二维码
-- [x] 根据内容生成二维码
-- [x] 支持上传图片识别二维码
-- [x] 支持修改快捷键操作
-- [x] 支持自动检测更新
-- [x] 更换图标
+- Upload to recognize the QR code
+  ![上传识别二维码](./docs/上传识别二维码.gif)
 
-## 截图实现流程
+- Generate QR code based on characters
+  ![根据字符生成二维码](./docs/根据字符生成二维码.gif)
+
+## 📝 TODO
+- [x] Support multi-screen capture
+- [x] Support screenshot to recognize QR code
+- [x] Generate QR codes based on content
+- [x] Support uploading pictures to recognize QR code
+- [x] Support for modifying shortcut key operations
+- [x] Supports automatic detection of updates
+- [x] Change icon
+
+## 📸 Screenshot Realization Flow
 ![](./docs/截图过程.png)
 
-
-## 使用说明
-- 快捷键
-  - 截图：Ctrl + Alt + C (默认快捷键)
-  - 退出：Esc
-- 完成截图：鼠标双击
+## 📚 Instructions for use
+- Shortcut key
+  - Screenshot：Ctrl + Alt + C (Default Shortcut Keys)
+  - Exit：Esc
+- Finished screenshot: double mouse click
 
